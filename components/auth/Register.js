@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Button, TextInput } from "react-native";
+import { StyleSheet, View, Button, TextInput } from "react-native";
 import firebase from "firebase";
 
 export class Register extends Component {
@@ -54,5 +54,11 @@ export class Register extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    marginTop: 40,
+  },
+});
 
 export default Register;
