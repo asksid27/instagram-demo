@@ -1,11 +1,15 @@
 import React, { Component } from "react";
-import { View, Text } from "react-native";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { fetchUser, fetchUserPosts } from "../redux/actions/index";
+import {
+  fetchUser,
+  fetchUserPosts,
+  fetchUserFollowing,
+  clearData,
+} from "../redux/actions/index";
 
 import firebase from "firebase";
 
@@ -19,8 +23,10 @@ const EmptyScreen = () => null;
 
 class Main extends Component {
   componentDidMount() {
+    this.props.clearData();
     this.props.fetchUser();
     this.props.fetchUserPosts();
+    this.props.fetchUserFollowing();
   }
 
   render() {
@@ -91,6 +97,9 @@ const mapStateToProps = (store) => ({
 });
 
 const mapDispatchProps = (dispatch) =>
-  bindActionCreators({ fetchUser, fetchUserPosts }, dispatch);
+  bindActionCreators(
+    { fetchUser, fetchUserPosts, fetchUserFollowing, clearData },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapDispatchProps)(Main);

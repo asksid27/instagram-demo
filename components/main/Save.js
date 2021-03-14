@@ -21,7 +21,7 @@ export default function Save(props) {
         creation: firebase.firestore.FieldValue.serverTimestamp(),
       })
       .then(() => {
-        props.navigation.popToTop();
+        props.navigation.navigate("Main");
       });
   };
 

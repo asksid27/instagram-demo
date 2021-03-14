@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Image, FlatList, StyleSheet } from "react-native";
+import { View, Text, Image, FlatList, StyleSheet, Button } from "react-native";
 
 import firebase from "firebase";
 require("firebase/firestore");
@@ -9,6 +9,7 @@ import { connect } from "react-redux";
 function Profile(props) {
   const [userPost, setUserPosts] = useState([]);
   const [user, setUser] = useState(null);
+  const [following, setFollowing] = useState(false);
 
   useEffect(() => {
     if (props.route.params.uid === firebase.auth().currentUser.uid) {
@@ -43,7 +44,37 @@ function Profile(props) {
           setUserPosts(posts);
         });
     }
-  }, [props.route.params.uid]);
+
+    if (props.follow.indexOf(props.route.params.uid) > -1) {
+      setFollowing(true);
+    } else {
+      setFollowing(false);
+    }
+  }, [props.route.params.uid, props.follow]);
+
+  const onFollow = () => {
+    firebase
+      .firestore()
+      .collection("following")
+      .doc(firebase.auth().currentUser.uid)
+      .collection("userFollowing")
+      .doc(props.route.params.uid)
+      .set({});
+  };
+
+  const onUnfollow = () => {
+    firebase
+      .firestore()
+      .collection("following")
+      .doc(firebase.auth().currentUser.uid)
+      .collection("userFollowing")
+      .doc(props.route.params.uid)
+      .delete();
+  };
+
+  const onLogout = () => {
+    firebase.auth().signOut();
+  };
 
   if (user === null) {
     return <View></View>;
@@ -52,6 +83,18 @@ function Profile(props) {
     <View style={styles.container}>
       <View style={styles.containerInfo}>
         <Text>{user.name}</Text>
+
+        {props.route.params.uid !== firebase.auth().currentUser.uid ? (
+          <View>
+            {following ? (
+              <Button title="Following" onPress={() => onUnfollow()} />
+            ) : (
+              <Button title="Follow" onPress={() => onFollow()} />
+            )}
+          </View>
+        ) : (
+          <Button title="Logout" onPress={() => onLogout()} />
+        )}
       </View>
       <View style={{ flex: 20 }}>
         <FlatList
@@ -90,6 +133,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (store) => ({
   currentUser: store.userState.currentUser,
   posts: store.userState.posts,
+  follow: store.userState.follow,
 });
 
 export default connect(mapStateToProps, null)(Profile);
