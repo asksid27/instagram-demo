@@ -29,6 +29,7 @@ import RegisterScreen from "./components/auth/Register";
 import LoginScreen from "./components/auth/Login";
 import MainScreen from "./components/Main";
 import AddScreen from "./components/main/Add";
+import SaveScreen from "./components/main/Save";
 
 const Stack = createStackNavigator();
 
@@ -104,6 +105,13 @@ class App extends Component {
             <Stack.Screen
               name="Add"
               component={AddScreen}
+              navigation={this.props.navigation}
+              options={{ headerShown: true }}
+            />
+            <Stack.Screen
+              name="Save"
+              component={SaveScreen}
+              navigation={this.props.navigation}
               options={{ headerShown: true }}
             />
           </Stack.Navigator>
